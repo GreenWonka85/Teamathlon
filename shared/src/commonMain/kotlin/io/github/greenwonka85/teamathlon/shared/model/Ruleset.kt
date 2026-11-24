@@ -4,7 +4,10 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * Regelwerk einer Challenge. Wird als JSON in der Datenbank gespeichert,
+ * Regelwerk einer Challenge. Der Organisator wählt frei, was zählt: jede
+ * Kombination aus Schwimmen, Rad und Lauf, mit oder ohne Schritte, also auch
+ * eine reine Rad-, Lauf-, Schwimm- oder Schritte-Challenge.
+ * Wird als JSON in der Datenbank gespeichert,
  * damit der Admin es je Challenge anpassen kann.
  */
 @Serializable
@@ -17,7 +20,7 @@ data class Ruleset(
     @SerialName("indoor_allowed") val indoorAllowed: Boolean = true,
     /** Punkte für eine volle Normdistanz je Sportart. */
     @SerialName("points_per_norm_distance") val pointsPerNormDistance: Double = 100.0,
-    /** Normdistanz je Sportart in Metern, Standard ist die Ironman-Distanz. */
+    /** Normdistanz je Sportart in Metern, Standard ist die Ironman-Distanz als Vergleichsmaßstab. */
     @SerialName("norm_distance_m") val normDistanceMeters: Map<Sport, Double> =
         Sport.entries.associateWith { it.ironmanDistanceMeters },
     /** Ab dieser Durchschnittsgeschwindigkeit (km/h) wird eine Aktivität markiert. */
@@ -26,7 +29,7 @@ data class Ruleset(
         Sport.BIKE to 60.0,
         Sport.RUN to 25.0,
     ),
-    /** Ob es eine eigene Schritte-Wertung gibt. Zählt nicht zu den Triathlon-Punkten. */
+    /** Ob es eine eigene Schritte-Wertung gibt. Zählt nicht zu den Punkten der Sportarten. */
     @SerialName("steps_enabled") val stepsEnabled: Boolean = true,
     /** Ab dieser Tagessumme werden Schritte markiert und vom Admin geprüft. */
     @SerialName("max_daily_steps") val maxDailySteps: Long = 100_000,
@@ -42,10 +45,14 @@ data class Ruleset(
         normDistanceMeters[sport] ?: sport.ironmanDistanceMeters
 
     companion object {
-        /** Standard-Regelwerk: Ironman-Normierung, alle Sportarten, Indoor erlaubt, Schritte als eigene Wertung. */
+        /** Standard-Regelwerk: alle Sportarten, Indoor erlaubt, Schritte als eigene Wertung. */
         val DEFAULT = Ruleset()
 
         /** Reine Schritte-Challenge ohne Sportarten. */
         val STEPS_ONLY = Ruleset(sports = emptySet(), stepsEnabled = true)
+
+        /** Challenge nur mit den angegebenen Sportarten, z.B. `only(Sport.BIKE)` für eine Rad-Challenge. */
+        fun only(vararg sports: Sport, steps: Boolean = false): Ruleset =
+            Ruleset(sports = sports.toSet(), stepsEnabled = steps)
     }
 }

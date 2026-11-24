@@ -9,7 +9,8 @@ import io.github.greenwonka85.teamathlon.shared.model.Sport
  * Punkteberechnung nach dem Regelwerk einer Challenge.
  *
  * Punkte = Punkte je Normdistanz * Distanz / Normdistanz der Sportart.
- * Im Standard ergibt eine volle Ironman-Teildistanz 100 Punkte.
+ * Im Standard ergibt eine volle Ironman-Teildistanz 100 Punkte. Das macht
+ * die Sportarten untereinander vergleichbar, wenn eine Challenge mehrere enthält.
  * Es gibt keine Obergrenze: Jeder Kilometer zählt voll.
  *
  * Diese Formel ist identisch mit der Datenbankfunktion

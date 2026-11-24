@@ -4,10 +4,12 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * Die drei Sportarten der App. Andere Sportarten werden nicht erfasst.
+ * Die Sportarten der App. Jede Challenge wählt frei, welche davon zählen:
+ * eine einzelne, mehrere oder keine (reine Schritte-Challenge).
  *
- * [ironmanDistanceMeters] ist die Ironman-Teildistanz, auf die die Punkte
- * im Standard-Regelwerk normiert werden.
+ * [ironmanDistanceMeters] ist der Vergleichsmaßstab, auf den die Punkte im
+ * Standard-Regelwerk normiert werden, damit die Sportarten untereinander
+ * fair vergleichbar sind.
  */
 @Serializable
 enum class Sport(val ironmanDistanceMeters: Double) {

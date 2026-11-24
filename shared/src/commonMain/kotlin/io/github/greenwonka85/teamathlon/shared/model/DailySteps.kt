@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
  * Tagessumme, keine Uhrzeiten und keine Strecken.
  *
  * Schritte bilden eine eigene Wertung und zählen nicht zu den
- * Triathlon-Punkten, da auch beim Laufen Schritte entstehen.
+ * Punkten der Sportarten, da auch beim Laufen Schritte entstehen.
  */
 @Serializable
 data class DailySteps(

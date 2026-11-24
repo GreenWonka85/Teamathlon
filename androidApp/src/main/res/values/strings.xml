@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Teamathlon</string>
     <string name="welcome_title">Willkommen</string>
-    <string name="welcome_intro">Schwimmen, Radfahren, Laufen: Jede Sportart zählt für sich. Ob nur Laufen oder eine beliebige Kombination, ein kompletter Triathlon ist nicht nötig.</string>
+    <string name="welcome_intro">Radfahren, Laufen, Schwimmen oder Schritte: Jede Challenge legt fest, was zählt. Ob nur eine Sportart oder eine beliebige Kombination, jede Bewegung bringt Ihr Team voran.</string>
     <string name="welcome_server_hint">Verbinden Sie die App mit dem Server Ihrer Organisation. Die Adresse erhalten Sie von Ihrer Hochschule, Firma oder Gruppe.</string>
     <string name="scan_qr">QR-Code scannen</string>
     <string name="scan_qr_hint">Vom Aushang, aus der Einladungs-Mail oder vom Bildschirm einer anderen Person</string>
