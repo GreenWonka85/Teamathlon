@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 data class Ruleset(
     /** Version des Regelwerks, wird an jedem Punkteeintrag gespeichert. */
     val version: Int = 1,
-    /** Sportarten, die in dieser Challenge zählen. */
+    /** Sportarten, die in dieser Challenge zählen. Leer bei einer reinen Schritte-Challenge. */
     val sports: Set<Sport> = Sport.entries.toSet(),
     /** Ob Indoor-Aktivitäten (Laufband, Ergometer) zählen. */
     @SerialName("indoor_allowed") val indoorAllowed: Boolean = true,
@@ -26,17 +26,26 @@ data class Ruleset(
         Sport.BIKE to 60.0,
         Sport.RUN to 25.0,
     ),
+    /** Ob es eine eigene Schritte-Wertung gibt. Zählt nicht zu den Triathlon-Punkten. */
+    @SerialName("steps_enabled") val stepsEnabled: Boolean = true,
+    /** Ab dieser Tagessumme werden Schritte markiert und vom Admin geprüft. */
+    @SerialName("max_daily_steps") val maxDailySteps: Long = 100_000,
 ) {
     init {
         require(pointsPerNormDistance > 0) { "pointsPerNormDistance muss positiv sein" }
         require(normDistanceMeters.values.all { it > 0 }) { "Normdistanzen müssen positiv sein" }
+        require(maxDailySteps > 0) { "maxDailySteps muss positiv sein" }
+        require(sports.isNotEmpty() || stepsEnabled) { "Mindestens eine Sportart oder die Schritte-Wertung muss aktiv sein" }
     }
 
     fun normDistanceFor(sport: Sport): Double =
         normDistanceMeters[sport] ?: sport.ironmanDistanceMeters
 
     companion object {
-        /** Standard-Regelwerk: Ironman-Normierung, alle Sportarten, Indoor erlaubt. */
+        /** Standard-Regelwerk: Ironman-Normierung, alle Sportarten, Indoor erlaubt, Schritte als eigene Wertung. */
         val DEFAULT = Ruleset()
+
+        /** Reine Schritte-Challenge ohne Sportarten. */
+        val STEPS_ONLY = Ruleset(sports = emptySet(), stepsEnabled = true)
     }
 }

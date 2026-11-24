@@ -2,18 +2,30 @@ package io.github.greenwonka85.teamathlon.shared.scoring
 
 import io.github.greenwonka85.teamathlon.shared.model.Sport
 
-/** Wertungskategorien: Triathlon (alle Sportarten) und jede Sportart einzeln. */
+/**
+ * Wertungskategorien: Triathlon (alle Sportarten), jede Sportart einzeln
+ * und die eigene Schritte-Wertung. Schritte zählen nicht zum Triathlon.
+ */
 enum class Category(val sport: Sport?) {
     TRIATHLON(null),
     SWIM(Sport.SWIM),
     BIKE(Sport.BIKE),
     RUN(Sport.RUN),
+    STEPS(null),
 }
 
-/** Punkte einer Person, aufgeschlüsselt nach Sportart. */
-data class PersonScore(val userId: String, val pointsBySport: Map<Sport, Double>) {
-    fun points(category: Category): Double =
-        if (category.sport == null) pointsBySport.values.sum() else pointsBySport[category.sport] ?: 0.0
+/** Punkte einer Person, aufgeschlüsselt nach Sportart, und ihre Schritte. */
+data class PersonScore(
+    val userId: String,
+    val pointsBySport: Map<Sport, Double>,
+    val steps: Long = 0,
+) {
+    /** Wert in der Kategorie: Punkte, bei [Category.STEPS] die Schrittzahl. */
+    fun points(category: Category): Double = when (category) {
+        Category.TRIATHLON -> pointsBySport.values.sum()
+        Category.STEPS -> steps.toDouble()
+        else -> pointsBySport[category.sport] ?: 0.0
+    }
 }
 
 data class RankedEntry(val id: String, val points: Double, val rank: Int)

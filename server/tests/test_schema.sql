@@ -144,4 +144,57 @@ delete from public.challenge_members where user_id = auth.uid();
 reset role;
 select pg_temp.erwarte((select count(*) = 0 from public.score_entries where user_id = '00000000-0000-0000-0000-00000000000c'), 'Austritt entfernt Punkte');
 
+-- Schritte-Wertung ----------------------------------------------------------
+select pg_temp.als('00000000-0000-0000-0000-00000000000b', 'anna@uni-example.de');
+insert into public.daily_steps (source, day, steps) values
+    ('health_connect', (now() at time zone 'Europe/Berlin')::date, 8000),
+    ('health_connect', (now() at time zone 'Europe/Berlin')::date - 1, 6000),
+    ('health_connect', (now() at time zone 'Europe/Berlin')::date - 30, 7000);
+insert into public.daily_steps (source, day, steps, recording_method) values
+    ('healthkit', (now() at time zone 'Europe/Berlin')::date - 1, 20000, 'manual');
+-- Im Laufe des Tages aktualisiert die App die Tagessumme.
+insert into public.daily_steps (source, day, steps) values ('health_connect', (now() at time zone 'Europe/Berlin')::date, 8500)
+    on conflict (user_id, source, day) do update set steps = excluded.steps;
+select pg_temp.erwarte((select status from public.daily_steps where recording_method = 'manual') = 'rejected', 'Manuell nachgetragene Schritte werden verworfen');
+reset role;
+-- Garmin meldet für denselben Tag etwas mehr: nur der höchste Wert zählt.
+insert into public.daily_steps (user_id, source, day, steps)
+values ('00000000-0000-0000-0000-00000000000b', 'garmin', (now() at time zone 'Europe/Berlin')::date, 9000);
+select pg_temp.als('00000000-0000-0000-0000-00000000000b', 'anna@uni-example.de');
+select pg_temp.erwarte(
+    (select steps = 9000 + 6000 from public.leaderboard_persons('11111111-1111-1111-1111-111111111111') where user_id = auth.uid()),
+    'Schritte: je Tag höchster Wert, nur gültige Tage im Zeitraum');
+select pg_temp.erwarte(
+    (select total = round(100.0 * 10000 / 42195, 3) from public.leaderboard_persons('11111111-1111-1111-1111-111111111111') where user_id = auth.uid()),
+    'Schritte zählen nicht zu den Triathlon-Punkten');
+select pg_temp.erwarte(
+    (select steps = 15000 from public.leaderboard_teams('11111111-1111-1111-1111-111111111111')),
+    'Team-Schritte = Durchschnitt je Mitglied');
+do $$ begin
+    insert into public.daily_steps (source, day, steps) values ('garmin', current_date, 100);
+    raise exception 'App konnte Garmin-Schritte anlegen';
+exception when insufficient_privilege then raise notice 'ok: Garmin-Schritte nur serverseitig';
+end $$;
+reset role;
+
+-- Reine Schritte-Challenge.
+select pg_temp.als('00000000-0000-0000-0000-00000000000a', 'orga@uni-example.de');
+insert into public.challenges (id, name, starts_at, ends_at, ruleset)
+values ('22222222-2222-2222-2222-222222222222', 'Schritte Dezember', now() - interval '2 days', now() + interval '30 days',
+        '{"sports": [], "steps_enabled": true}');
+do $$ begin
+    insert into public.challenges (name, starts_at, ends_at, ruleset)
+    values ('Leer', now(), now() + interval '1 day', '{"sports": [], "steps_enabled": false}');
+    raise exception 'Challenge ohne Wertung möglich';
+exception when check_violation then raise notice 'ok: Challenge braucht Sportart oder Schritte';
+end $$;
+select public.create_invitation('22222222-2222-2222-2222-222222222222') as stepcode \gset
+reset role;
+select pg_temp.als('00000000-0000-0000-0000-00000000000b', 'anna@uni-example.de');
+select public.join_with_code(:'stepcode');
+select pg_temp.erwarte(
+    (select steps = 15000 and total = 0 from public.leaderboard_persons('22222222-2222-2222-2222-222222222222') where user_id = auth.uid()),
+    'Schritte-Challenge zählt Schritte, aber keine Sportpunkte');
+reset role;
+
 do $$ begin raise notice 'Alle Tests bestanden.'; end $$;
