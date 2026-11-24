@@ -20,6 +20,8 @@ include(":shared")
 
 // Mit -Pteamathlon.ohneAndroid=true lässt sich das gemeinsame Modul
 // ohne Android SDK bauen und testen (z.B. auf einem Server).
-if (providers.gradleProperty("teamathlon.ohneAndroid").orNull != "true") {
+if (providers.gradleProperty("teamathlon.ohneAndroid").orNull == "true") {
+    rootProject.buildFileName = "build-ohne-android.gradle.kts"
+} else {
     include(":androidApp")
 }
