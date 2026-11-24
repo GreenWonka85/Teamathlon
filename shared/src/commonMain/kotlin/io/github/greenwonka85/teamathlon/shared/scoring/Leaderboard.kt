@@ -1,17 +1,31 @@
 package io.github.greenwonka85.teamathlon.shared.scoring
 
+import io.github.greenwonka85.teamathlon.shared.model.Ruleset
 import io.github.greenwonka85.teamathlon.shared.model.Sport
 
 /**
- * Wertungskategorien: Triathlon (alle Sportarten), jede Sportart einzeln
- * und die eigene Schritte-Wertung. Schritte zählen nicht zum Triathlon.
+ * Wertungskategorien: Gesamtwertung (alle Sportarten der Challenge), jede
+ * Sportart einzeln und die eigene Schritte-Wertung. Schritte zählen nicht
+ * zur Gesamtwertung. Welche Kategorien eine Challenge zeigt, ergibt sich aus
+ * ihrem Regelwerk, siehe [categoriesFor].
  */
 enum class Category(val sport: Sport?) {
-    TRIATHLON(null),
+    TOTAL(null),
     SWIM(Sport.SWIM),
     BIKE(Sport.BIKE),
     RUN(Sport.RUN),
     STEPS(null),
+}
+
+/**
+ * Die Kategorien, die eine Challenge anzeigt. Die Gesamtwertung erscheint
+ * nur, wenn mehr als eine Sportart zählt; bei einer reinen Rad-Challenge
+ * wäre sie identisch mit der Rad-Wertung.
+ */
+fun categoriesFor(ruleset: Ruleset): List<Category> = buildList {
+    if (ruleset.sports.size > 1) add(Category.TOTAL)
+    Category.entries.filter { it.sport != null && it.sport in ruleset.sports }.forEach(::add)
+    if (ruleset.stepsEnabled) add(Category.STEPS)
 }
 
 /** Punkte einer Person, aufgeschlüsselt nach Sportart, und ihre Schritte. */
@@ -22,7 +36,7 @@ data class PersonScore(
 ) {
     /** Wert in der Kategorie: Punkte, bei [Category.STEPS] die Schrittzahl. */
     fun points(category: Category): Double = when (category) {
-        Category.TRIATHLON -> pointsBySport.values.sum()
+        Category.TOTAL -> pointsBySport.values.sum()
         Category.STEPS -> steps.toDouble()
         else -> pointsBySport[category.sport] ?: 0.0
     }

@@ -166,7 +166,7 @@ select pg_temp.erwarte(
     'Schritte: je Tag höchster Wert, nur gültige Tage im Zeitraum');
 select pg_temp.erwarte(
     (select total = round(100.0 * 10000 / 42195, 3) from public.leaderboard_persons('11111111-1111-1111-1111-111111111111') where user_id = auth.uid()),
-    'Schritte zählen nicht zu den Triathlon-Punkten');
+    'Schritte zählen nicht zur Gesamtwertung');
 select pg_temp.erwarte(
     (select steps = 15000 from public.leaderboard_teams('11111111-1111-1111-1111-111111111111')),
     'Team-Schritte = Durchschnitt je Mitglied');

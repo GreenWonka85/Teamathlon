@@ -17,7 +17,7 @@ class LeaderboardTest {
     )
 
     @Test
-    fun triathlonCategorySumsAllSportsAndSharesRanksOnTies() {
+    fun totalCategorySumsAllSportsAndSharesRanksOnTies() {
         assertEquals(
             listOf(
                 RankedEntry("anna", 80.0, 1),
@@ -25,7 +25,7 @@ class LeaderboardTest {
                 RankedEntry("dora", 80.0, 1),
                 RankedEntry("cem", 20.0, 4),
             ),
-            Leaderboard.rankPersons(scores, Category.TRIATHLON),
+            Leaderboard.rankPersons(scores, Category.TOTAL),
         )
     }
 
@@ -42,7 +42,7 @@ class LeaderboardTest {
             "klein" to listOf("anna", "ben"),             // (80 + 80) / 2 = 80
             "gross" to listOf("cem", "dora", "neu"),      // (20 + 80 + 0) / 3 = 33,3
         )
-        val ranked = Leaderboard.rankTeams(teams, scores, Category.TRIATHLON)
+        val ranked = Leaderboard.rankTeams(teams, scores, Category.TOTAL)
         assertEquals(listOf("klein", "gross"), ranked.map { it.id })
         assertEquals(100.0 / 3, ranked[1].points, 1e-9)
     }

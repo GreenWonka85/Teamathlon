@@ -57,14 +57,14 @@ class StepsTest {
     }
 
     @Test
-    fun stepsHaveOwnRankingAndDoNotAddToTriathlon() {
+    fun stepsHaveOwnRankingAndDoNotAddToTotal() {
         val scores = listOf(
             PersonScore("geher", emptyMap(), steps = 300_000),
             PersonScore("laeufer", mapOf(Sport.RUN to 40.0), steps = 120_000),
         )
         assertEquals(listOf("geher", "laeufer"), Leaderboard.rankPersons(scores, Category.STEPS).map { it.id })
-        assertEquals(0.0, scores[0].points(Category.TRIATHLON))
-        assertEquals(40.0, scores[1].points(Category.TRIATHLON))
+        assertEquals(0.0, scores[0].points(Category.TOTAL))
+        assertEquals(40.0, scores[1].points(Category.TOTAL))
         // Teams: Durchschnitt der Schritte je Mitglied.
         val teams = Leaderboard.rankTeams(mapOf("t" to listOf("geher", "laeufer")), scores, Category.STEPS)
         assertEquals(210_000.0, teams.single().points)
