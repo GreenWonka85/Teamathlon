@@ -33,3 +33,7 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+# Supabase-Konfiguration mit Geheimnissen
+.env
+.env.bak

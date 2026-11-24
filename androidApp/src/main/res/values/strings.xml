@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Teamathlon</string>
+    <string name="welcome_title">Willkommen</string>
+    <string name="welcome_intro">Schwimmen, Radfahren, Laufen: Jede Sportart zählt für sich. Ob nur Laufen oder eine beliebige Kombination, ein kompletter Triathlon ist nicht nötig.</string>
+    <string name="welcome_server_hint">Verbinden Sie die App mit dem Server Ihrer Organisation. Die Adresse erhalten Sie von Ihrer Hochschule, Firma oder Gruppe.</string>
+    <string name="scan_qr">QR-Code scannen</string>
+    <string name="scan_qr_hint">Vom Aushang, aus der Einladungs-Mail oder vom Bildschirm einer anderen Person</string>
+    <string name="scan_qr_coming">Der QR-Scanner folgt in einem der nächsten Schritte.</string>
+    <string name="or_enter_address">oder Adresse eingeben</string>
+    <string name="server_address">Serveradresse</string>
+    <string name="server_address_placeholder">https://challenge.ihre-organisation.de</string>
+    <string name="connect">Verbinden</string>
+    <string name="server_address_invalid">Bitte eine gültige Adresse eingeben. Unverschlüsseltes http ist nur im lokalen Netz erlaubt.</string>
+    <string name="server_selected">Server gewählt: %1$s</string>
+    <string name="invite_detected">Einladung erkannt, Code %1$s</string>
+    <string name="privacy_note">Ihre Daten liegen ausschließlich auf dem Server Ihrer Organisation. Später können weitere Server als zusätzliche Konten hinzugefügt werden.</string>
+</resources>
