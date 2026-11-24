@@ -1,0 +1,56 @@
+name: Build und Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  shared:
+    name: Gemeinsames Modul
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+      - run: ./gradlew -Pteamathlon.ohneAndroid=true :shared:jvmTest
+
+  android:
+    name: Android-App
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+      - run: ./gradlew :androidApp:assembleDebug :androidApp:lintDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: teamathlon-debug-apk
+          path: androidApp/build/outputs/apk/debug/*.apk
+
+  datenbank:
+    name: Datenbankschema
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - run: server/tests/run.sh
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
