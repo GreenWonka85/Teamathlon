@@ -8,7 +8,7 @@ Der Server läuft vollständig in Docker. Derselbe Aufbau funktioniert später a
 
 | Pfad | Inhalt |
 | --- | --- |
-| `supabase/migrations/` | Datenbankschema mit Zugriffsregeln, Punkteberechnung, Einladungen und Ranglisten |
+| `supabase/migrations/` | Datenbankschema mit Zugriffsregeln, Punkteberechnung, Schritte-Wertung, Einladungen und Ranglisten |
 | `scripts/setup-env.py` | Erzeugt alle Passwörter und Schlüssel für Supabase |
 | `scripts/apply-migrations.sh` | Spielt das Datenbankschema ein |
 | `tests/` | Automatische Tests des Datenbankschemas |
